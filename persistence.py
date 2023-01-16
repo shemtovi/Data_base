@@ -4,15 +4,14 @@ from dbtools import Dao
  
 # Data Transfer Objects:
 class Employee(object):
-    def __init__(self, id, name, salary, branche, balance) -> None:
+    def __init__(self, id, name, salary, branche) -> None:
         self.id = id
         self.name = name
         self.salary = salary
         self.branche = branche
-        self.balance = balance
 
     def __str__(self):
-        return f"{self.id}, {self.name.decode()}, {self.salary}, {self.branche}"
+        return f"{self.id}, '{self.name.decode()}', {self.salary}, {self.branche}"
 
  
 class Supplier(object):
@@ -22,7 +21,7 @@ class Supplier(object):
         self.contact_information = contact_information
 
     def __str__(self):
-        return f"{self.id}, {self.name.decode()}, {self.contact_information.decode()}"
+        return f"{self.id}, '{self.name.decode()}', '{self.contact_information.decode()}'"
 
 
 class Product(object):
@@ -33,7 +32,7 @@ class Product(object):
         self.quantity = quantity
 
     def __str__(self):
-        return f"{self.id}, {self.description.decode()}, {self.price}, {self.quantity}"
+        return f"{self.id}, '{self.description.decode()}', {self.price}, {self.quantity}"
 
 
 class Branche(object):
@@ -43,7 +42,7 @@ class Branche(object):
         self.number_of_employees = number_of_employees
 
     def __str__(self):
-        return f"{self.id}, {self.location.decode()}, {self.number_of_employees}"
+        return f"{self.id}, '{self.location.decode()}', {self.number_of_employees}"
 
 
 
@@ -79,8 +78,7 @@ class Repository(object):
                 id              INT         PRIMARY KEY,
                 name            TEXT        NOT NULL,
                 salary          REAL        NOT NULL,
-                branche    INT REFERENCES branches(id),
-                balance         INT         NOT NULL
+                branche    INT REFERENCES branches(id)
             );
     
             CREATE TABLE suppliers (

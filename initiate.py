@@ -33,8 +33,7 @@ def add_employee(splittedline : list):
     name = splittedline[1]
     salary = splittedline[2]
     branche = splittedline[3]
-    balance = 0
-    employee = Employee(id,name,salary,branche, balance)
+    employee = Employee(id,name,salary,branche)
     repo.employees.insert(employee)
 
 
