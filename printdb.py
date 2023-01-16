@@ -2,31 +2,41 @@ from persistence import *
 
 def main():
     print("Activities")
-    activitie_list = repo.execute_command("SELECT * FROM activities")
+    activitie_list = repo.activities.find_all()
     for line in activitie_list:
-        activitie = Activitie(line[0], line[1], line[2], line[3])
-        print(activitie)
+        print("(", end='')
+        print(line, end='')
+        print(")")
     print("Branches")
-    branche_list = repo.execute_command("SELECT * FROM branches")
+    branche_list = repo.branches.find_all()
     for line in branche_list:
-        branches = Branche(line[0], line[1], line[2])
-        print(branches)
+        print("(", end='')
+        print(line, end='')
+        print(")")
     print("Employees")
-    employees_list = repo.execute_command("SELECT * FROM employees")
+    employees_list = repo.employees.find_all()
     for line in employees_list:
-        employees = Employee(line[0], line[1], line[2], line[3], line[4])
-        print(employees)
+        print("(", end='')
+        print(line, end='')
+        print(")")
     print("Products")
-    products_list = repo.execute_command("SELECT * FROM products")
+    products_list = repo.products.find_all()
     for line in products_list:
-        products = Product(line[0], line[1], line[2], line[3])
-        print(products)
+        print("(", end='')
+        print(line, end='')
+        print(")")
     print("Suppliers")
-    suppliers_list = repo.execute_command("SELECT * FROM suppliers")
+    suppliers_list = repo.suppliers.find_all()
     for line in suppliers_list:
-        suppliers = Supplier(line[0], line[1], line[2])
-        print(suppliers)
-
+        print("(", end='')
+        print(line, end='')
+        print(")")
+    print("Employees report")
+    report = repo.execute_command("SELECT name, salary, location, balance FROM employees JOIN branches ON branche = branches.id ORDER BY name;")
+    for line in report:
+        print(f"{line[0].decode()}, {line[1]}, {line[2].decode()}, {line[3]}")
+    print("Activities report")
+    
 
 
 if __name__ == '__main__':
