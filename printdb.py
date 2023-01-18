@@ -2,37 +2,27 @@ from persistence import *
 
 def main():
     print("Activities")
-    activitie_list = repo.activities.find_all()
+    activitie_list = repo._conn.cursor().execute("SELECT * FROM activities ORDER BY date ASC")
     for line in activitie_list:
-        print("(", end='')
-        print(line, end='')
-        print(")")
+        print(str(line).replace('"',''))
     print("Branches")
-    branche_list = repo.branches.find_all()
+    branche_list = repo._conn.cursor().execute("SELECT * FROM branches ORDER BY id ASC").fetchall()
     for line in branche_list:
-        print("(", end='')
-        print(line, end='')
-        print(")")
+        print(line)
     print("Employees")
-    employees_list = repo.employees.find_all()
+    employees_list = repo._conn.cursor().execute("SELECT * FROM employees ORDER BY id ASC").fetchall()
     for line in employees_list:
-        print("(", end='')
-        print(line, end='')
-        print(")")
+        print(line)
     print("Products")
-    products_list = repo.products.find_all()
+    products_list = repo._conn.cursor().execute("SELECT * FROM products ORDER BY id ASC").fetchall()
     for line in products_list:
-        print("(", end='')
-        print(line, end='')
-        print(")")
+        print(line)
     print("Suppliers")
-    suppliers_list = repo.suppliers.find_all()
+    suppliers_list = repo._conn.cursor().execute("SELECT * FROM suppliers ORDER BY id ASC").fetchall()
     for line in suppliers_list:
-        print("(", end='')
-        print(line, end='')
-        print(")")
+        print(line)
     
-    print("Employees report")
+    print("\nEmployees report")
     report = repo.execute_command("SELECT employees.id, name, salary, location FROM employees JOIN branches ON branche = branches.id ORDER BY name;")
     for line in report:
         balance = 0
@@ -40,33 +30,16 @@ def main():
         for amount in tempTable:
             price = repo.execute_command(f"SELECT price FROM products WHERE products.id = {amount[1]}").pop()
             balance += -(amount[0]*price[0])
-        print(f"{line[1].decode()}, {line[2]}, {line[3].decode()}, {balance}")
-    print("Activities report")
+        print(f"{line[1]} {line[2]} {line[3]} {balance}")
+    print("\nActivities report")
     activities_report = []
-    employees_report=repo.execute_command("SELECT activities.date, products.description, activities.quantity, employees.name\
-                                FROM activities JOIN products JOIN employees\
-                                ON activities.product_id = products.id AND activities.activator_id = employees.id\
-                                ORDER BY activities.date")
-    suppliers_report=repo.execute_command("SELECT activities.date, products.description, activities.quantity, suppliers.name\
-                                FROM activities JOIN products JOIN suppliers\
-                                ON activities.product_id = products.id AND activities.activator_id = suppliers.id\
-                                ORDER BY activities.date")
-    for activity in employees_report:
-        toList = list(activity)
-        toList.append("None")
-        activities_report.append(toList)
-    for activity in suppliers_report:
-        toList = list(activity)
-        toList.insert(3, "None")
-        activities_report.append(toList)
-    activities_report.sort(key=lambda x: x[0])
+    activities_report=repo._conn.cursor().execute('''SELECT activities.date, products.description, activities.quantity, employees.name, suppliers.name
+                                FROM activities JOIN products on activities.product_id = products.id
+                                left JOIN employees ON activities.activator_id = employees.id
+                                left JOIN suppliers ON activities.activator_id = suppliers.id
+                                ORDER BY activities.date''')
     for activity in activities_report:
-        print("(", end='')
-        if(activity[4] == "None"):
-            print(f"{activity[0].decode()}, '{activity[1].decode()}', {activity[2]}, '{activity[3].decode()}', {activity[4]}", end='')
-        else:
-            print(f"{activity[0].decode()}, '{activity[1].decode()}', {activity[2]}, {activity[3]}, '{activity[4].decode()}'", end='')
-        print(")")
+        print(activity)
 
 
 if __name__ == '__main__':

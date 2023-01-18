@@ -7,7 +7,7 @@ def main(args : list):
     with open(inputfilename) as inputfile:
         for line in inputfile:
             splittedline : list[str] = line.strip().split(", ")
-            action = Activitie(splittedline[0], splittedline[1], splittedline[2], splittedline[3])
+            action = Activitie(splittedline[0], splittedline[1], splittedline[2], str(splittedline[3]))
             product: Product = repo.products.find(id = action.product_id).pop()
             updated_quantity = product.quantity + int(action.quantity)
             if(updated_quantity >= 0):     
